@@ -6,16 +6,16 @@ import java.awt.*;
  * If the mouse has not moved then it begins a DrawCircle phase, increasing the radius of the circle until the mouse is moved.
  */
 public class MouseTracker {
-    private PointerInfo previousPoint;
-    private PointerInfo currentPoint;
+    private Point previousPoint;
+    private Point currentPoint;
     private double timeSinceMoved;
     private boolean hasMoved;
     private boolean isDrawing;
     private SVGPrinter svgPrinter;
 
     public MouseTracker() {
-        previousPoint = MouseInfo.getPointerInfo();
-        currentPoint = MouseInfo.getPointerInfo();
+        previousPoint = MouseInfo.getPointerInfo().getLocation();
+        currentPoint = MouseInfo.getPointerInfo().getLocation();
         timeSinceMoved = 0;
         hasMoved = false;
         isDrawing = false;
@@ -29,8 +29,8 @@ public class MouseTracker {
 
     public void update() {
         if (isDrawing && TimeManager.hasHalfSecondPassed()) {
-            previousPoint = currentPoint;
-            currentPoint = MouseInfo.getPointerInfo();
+            previousPoint = new Point(currentPoint);
+            currentPoint = MouseInfo.getPointerInfo().getLocation();
             updateHasMoved();
             timeSinceMoved = hasMoved ? 0 : timeSinceMoved + TimeManager.deltaTime();
 
@@ -47,11 +47,11 @@ public class MouseTracker {
         svgPrinter.endDrawing();
     }
 
-    public PointerInfo getPreviousPoint() {
+    public Point getPreviousPoint() {
         return previousPoint;
     }
 
-    public PointerInfo getCurrentPoint() {
+    public Point getCurrentPoint() {
         return currentPoint;
     }
 
@@ -68,7 +68,7 @@ public class MouseTracker {
     }
 
     private void updateHasMoved() {
-        if (previousPoint.getLocation().x == currentPoint.getLocation().x && previousPoint.getLocation().y == currentPoint.getLocation().y) {
+        if (previousPoint.x == currentPoint.x && previousPoint.y == currentPoint.y) {
             hasMoved = false;
         } else {
             TimeManager.reset();

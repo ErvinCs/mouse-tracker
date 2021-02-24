@@ -17,24 +17,27 @@ public class SVGPrinter {
     private int lineWidth;
     private int circleRadius;
 
+    private float screenWidth = 1600;
+    private float screenHeight = 900;
+
     public SVGPrinter() {
         lineWidth = 2;
         circleRadius = 10;
     }
 
-    public void drawLine(PointerInfo A, PointerInfo B) {
+    public void drawLine(Point A, Point B) {
         try {
-            bufferedWriter.append("<line x1=\"" + A.getLocation().x + "\" y1=\"" + A.getLocation().y + "\" x2=\"" + B.getLocation().x + "\" y2=\"" + B.getLocation().y + "\"" +
-                    "style=\"stroke:black; stroke-width:" + lineWidth + "\" />\n");
+            bufferedWriter.append("<line x1=\"" + A.x + "\" y1=\"" + A.y + "\" x2=\"" + B.x + "\" y2=\"" + B.y + "\"" +
+                    "style=\"stroke:black; stroke-width:" + lineWidth + "\"></line>\n");
             bufferedWriter.flush();
         }catch (IOException ex) {
             System.err.println("SVGPrinter: Could not draw line!");
         }
     }
 
-    public void drawCircle(PointerInfo P) {
+    public void drawCircle(Point P) {
         try {
-            bufferedWriter.append("<circle cx=" + P.getLocation().x + " cy=" + P.getLocation().y + " r=" + circleRadius + "/>\n");
+            bufferedWriter.append("<circle cx=" + P.x + " cy=" + P.y + " r=" + circleRadius + "></circle>\n");
             bufferedWriter.flush();
         } catch (IOException ex) {
             System.err.println("SVGPrinter: Could not draw circle!");
@@ -69,7 +72,7 @@ public class SVGPrinter {
         {
             bufferedWriter.write("<!DOCTYPE html>\n");
             bufferedWriter.append("<html>\n  <head>\n    <title>SVGPrint</title>\n  </head>\n");
-            bufferedWriter.append("  <body>\n    <svg>\n");
+            bufferedWriter.append("  <body>\n    <svg width=\"" + screenWidth + "\" height=\"" + screenHeight + "\">\n");
         } catch (IOException ex)
         {
             System.err.println("SVGPrinter: An issue occured while initializing the file!");
