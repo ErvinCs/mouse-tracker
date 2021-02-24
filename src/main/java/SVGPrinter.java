@@ -12,31 +12,32 @@ import java.time.format.DateTimeFormatter;
 public class SVGPrinter {
     private File file;
     private String filename;
+    //TODO - Use a buffered Writer
     private FileWriter fileWriter;
     private int lineWidth;
     private int circleRadius;
 
     public SVGPrinter() {
-        filename = generateFilename();
-        file = new File(filename + ".html");
-        try {
-            fileWriter = new FileWriter(file);
-        }catch (IOException ex) {
-            System.err.println("SVGPrinter: Could not create file!");
-        }
-        initializeFileStructure();
-
         lineWidth = 2;
         circleRadius = 10;
     }
 
     public void drawLine(PointerInfo A, PointerInfo B) {
-        fileWriter.write("<line x1=\"" + A.x + "\" y1=\"" + A.y + "\" x2=\"" + B.x + "\" y2=\"" + B.y + "\"" +
-                "style=\"stroke:black; stroke-width:" + lineWidth + "\" />");
+        try {
+            fileWriter.write("<line x1=\"" + A.getLocation().x + "\" y1=\"" + A.getLocation().y + "\" x2=\"" + B.getLocation().x + "\" y2=\"" + B.getLocation().y + "\"" +
+                    "style=\"stroke:black; stroke-width:" + lineWidth + "\" />");
+        }catch (IOException ex) {
+            System.err.println("SVGPrinter: Could not draw line!");
+        }
     }
 
     public void drawCircle(PointerInfo P) {
-        fileWriter.write("<circle cx=" + P.x + "cy=" + P.y + "r=" + circleRadius + "/>");
+        try {
+            fileWriter.write("<circle cx=" + P.getLocation().x + "cy=" + P.getLocation().y + "r=" + circleRadius + "/>");
+        } catch (IOException ex) {
+            System.err.println("SVGPrinter: Could not draw circle!");
+        }
+
     }
 
     public void endDrawing() {
@@ -50,7 +51,16 @@ public class SVGPrinter {
         }
     }
 
-    private void initializeFileStructure() {
+    public void beginDrawing() {
+        filename = generateFilename();
+
+        file = new File(filename + ".html");
+        try {
+            fileWriter = new FileWriter(file);
+        }catch (IOException ex) {
+            System.err.println("SVGPrinter: Could not create file!");
+        }
+
         try
         {
             fileWriter.write("<!DOCTYPE html>\n");

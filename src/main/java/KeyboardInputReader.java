@@ -1,5 +1,3 @@
-import sun.reflect.generics.reflectiveObjects.NotImplementedException;
-
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 
@@ -11,32 +9,21 @@ import java.awt.event.KeyListener;
  */
 public class KeyboardInputReader implements KeyListener  {
     private boolean isRecording;
+    private MouseTracker mouseTracker;
 
-    public KeyboardInputReader() {
+    public KeyboardInputReader(MouseTracker mouseTracker) {
         isRecording = false;
+        this.mouseTracker = mouseTracker;
     }
 
-    public void ToggleRecoding()
-    {
-        if (isRecording)
-        {
-
+    public void ToggleRecoding() {
+        if (!isRecording) {
+            isRecording = true;
+            mouseTracker.begin();
+        } else {
+            isRecording = false;
+            mouseTracker.end();
         }
-        else
-        {
-
-        }
-        throw new NotImplementedException();
-    }
-
-    public void SaveRecording()
-    {
-        throw new NotImplementedException();
-    }
-
-    public void ExitApplication()
-    {
-        throw new NotImplementedException();
     }
 
     public void keyPressed(KeyEvent e) {
@@ -45,15 +32,11 @@ public class KeyboardInputReader implements KeyListener  {
         {
             case 'x':
             case 'X':
-                ExitApplication();
+                System.exit(0);
                 break;
             case 'r':
             case 'R':
                 ToggleRecoding();
-                break;
-            case 's':
-            case 'S':
-                SaveRecording();
                 break;
         }
     }

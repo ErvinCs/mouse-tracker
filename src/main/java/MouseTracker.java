@@ -10,7 +10,7 @@ public class MouseTracker {
     private PointerInfo currentPoint;
     private double timeSinceMoved;
     private boolean hasMoved;
-
+    private boolean isDrawing;
     private SVGPrinter svgPrinter;
 
     public MouseTracker() {
@@ -18,12 +18,33 @@ public class MouseTracker {
         currentPoint = MouseInfo.getPointerInfo();
         timeSinceMoved = 0;
         hasMoved = false;
+        isDrawing = false;
+        svgPrinter = new SVGPrinter();
+    }
+
+    public void begin() {
+        isDrawing = true;
+        svgPrinter.beginDrawing();
     }
 
     public void update() {
-        previousPoint = MouseInfo.getPointerInfo();
-        currentPoint = MouseInfo.getPointerInfo();
-        timeSinceMoved = hasMoved ? 0 : timeSinceMoved + TimeManager.deltaTime();
+        if (isDrawing && TimeManager.hasHalfSecondPassed()) {
+            previousPoint = MouseInfo.getPointerInfo();
+            currentPoint = MouseInfo.getPointerInfo();
+            updateHasMoved();
+            timeSinceMoved = hasMoved ? 0 : timeSinceMoved + TimeManager.deltaTime();
+
+            if (hasMoved) {
+                onMoved();
+            } else {
+                onStay();
+            }
+        }
+    }
+
+    public void end() {
+        isDrawing = false;
+        svgPrinter.endDrawing();
     }
 
     public PointerInfo getPreviousPoint() {
@@ -42,7 +63,16 @@ public class MouseTracker {
         svgPrinter.drawLine(previousPoint, currentPoint);
     }
 
-    public void onClicked() {
+    public void onStay() {
         svgPrinter.drawCircle(currentPoint);
+    }
+
+    private void updateHasMoved() {
+        if (previousPoint == currentPoint) {
+            hasMoved = false;
+        } else {
+            TimeManager.reset();
+            hasMoved = true;
+        }
     }
 }
