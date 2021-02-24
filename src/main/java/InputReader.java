@@ -7,11 +7,11 @@ import java.awt.event.KeyListener;
  * S - Save Recording to SVG
  * X - Exit Application
  */
-public class KeyboardInputReader implements KeyListener  {
+public class InputReader implements KeyListener  {
     private boolean isRecording;
     private MouseTracker mouseTracker;
 
-    public KeyboardInputReader(MouseTracker mouseTracker) {
+    public InputReader(MouseTracker mouseTracker) {
         isRecording = false;
         this.mouseTracker = mouseTracker;
     }

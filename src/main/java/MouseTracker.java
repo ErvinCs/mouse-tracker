@@ -29,7 +29,7 @@ public class MouseTracker {
 
     public void update() {
         if (isDrawing && TimeManager.hasHalfSecondPassed()) {
-            previousPoint = MouseInfo.getPointerInfo();
+            previousPoint = currentPoint;
             currentPoint = MouseInfo.getPointerInfo();
             updateHasMoved();
             timeSinceMoved = hasMoved ? 0 : timeSinceMoved + TimeManager.deltaTime();
@@ -68,7 +68,7 @@ public class MouseTracker {
     }
 
     private void updateHasMoved() {
-        if (previousPoint == currentPoint) {
+        if (previousPoint.getLocation().x == currentPoint.getLocation().x && previousPoint.getLocation().y == currentPoint.getLocation().y) {
             hasMoved = false;
         } else {
             TimeManager.reset();
