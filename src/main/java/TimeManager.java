@@ -2,7 +2,7 @@
  * Measures time and computes how much time ago a mouse movement has been made.
  */
 public class TimeManager {
-    public static long HalfSecond = 1000000000 / 2;
+    public static long HalfSecond = 1000000000 / 100;
 
     private static long lastTime;
 
