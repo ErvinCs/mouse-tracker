@@ -2,7 +2,7 @@
  * Measures time and computes how much time ago a mouse movement has been made.
  */
 public class TimeManager {
-    public static long HalfSecond = 1000000000 / 100;
+    public static long RecordTime = 1000000000 / 50;
 
     private static long lastTime;
 
@@ -18,7 +18,7 @@ public class TimeManager {
         lastTime = System.nanoTime();
     }
 
-    public static boolean hasHalfSecondPassed() {
-        return deltaTime() >= HalfSecond;
+    public static boolean hasRecordTimePassed() {
+        return deltaTime() >= RecordTime;
     }
 }

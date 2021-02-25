@@ -28,7 +28,7 @@ public class MouseTracker {
     }
 
     public void update() {
-        if (isDrawing && TimeManager.hasHalfSecondPassed()) {
+        if (isDrawing && TimeManager.hasRecordTimePassed()) {
             previousPoint = new Point(currentPoint);
             currentPoint = MouseInfo.getPointerInfo().getLocation();
             updateHasMoved();
