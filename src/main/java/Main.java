@@ -11,18 +11,16 @@ public class Main {
         InputReader kbInputReader = new InputReader(mouseTracker);
 
         boolean isRunning = true;
-        float runFor = 1000000000;
-        float hasRunFor = 0;
 
-        String instructions = "R - Begin/Stop Recording \t S - Save Recording to SVG \t X - Exit Application";
+        String instructions = "R - Begin/Stop Recording \t X - Exit Application";
         System.out.println(instructions);
 
         kbInputReader.ToggleRecoding();
 
         TimeManager.reset();
-        while (true) {
-            hasRunFor += TimeManager.deltaTime() % 1000000000;
-            //System.out.println(hasRunFor + "\n");
+        while (isRunning) {
+            // If pressed X then Exit
+            // If pressed R then kbInputReader.ToggleRecording();
             mouseTracker.update();
         }
 

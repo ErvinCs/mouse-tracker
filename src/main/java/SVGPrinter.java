@@ -24,6 +24,7 @@ public class SVGPrinter {
     private float screenHeight = 900;
 
     private Set<Point> points;
+    private boolean hasStopped;
 
     public SVGPrinter() {
         lineWidth = 2;
@@ -31,7 +32,14 @@ public class SVGPrinter {
         points = new HashSet<>();
     }
 
+    public void setHasStopped(boolean hasStopped) {
+        this.hasStopped = hasStopped;
+    }
+
+    @Deprecated
     public void drawLine(Point A, Point B) {
+        System.out.println("SVGPrinter::drawLine - Is Deprecated!");
+
         try {
             bufferedWriter.append("<line x1=\"" + A.x + "\" y1=\"" + A.y + "\" x2=\"" + B.x + "\" y2=\"" + B.y + "\"" +
                     "style=\"stroke:black; stroke-width:" + lineWidth + "\"></line>\n");
@@ -41,11 +49,36 @@ public class SVGPrinter {
         }
     }
 
+    public void startDrawLine(Point A, Point B) {
+        try {
+            bufferedWriter.append("<path d=\"M" + A.x + " " + A.y + " L" + B.x + " " + B.y);
+        }catch (IOException ex) {
+            System.err.println("SVGPrinter: Failed on StartDrawLine!");
+        }
+    }
+
+    public void continueDrawLine(Point C) {
+        try {
+            bufferedWriter.append(" L" + C.x + " " + C.y);
+        }catch (IOException ex) {
+            System.err.println("SVGPrinter: Failed on ContinueDrawLine!");
+        }
+    }
+
+    public void finishDrawLine() {
+        try {
+            bufferedWriter.append("\" style=\"stroke:black;stroke-width:2;fill:none;\"></path>\n");
+        }catch (IOException ex) {
+            System.err.println("SVGPrinter: Failed on ContinueDrawLine!");
+        }
+    }
+
     public void drawCircle(Point P) {
         if (!points.contains(P)) {
             points.add(P);
             try {
-                bufferedWriter.append("<circle cx=" + P.x + " cy=" + P.y + " r=" + circleRadius + "></circle>\n");
+                bufferedWriter.append("<circle cx=" + P.x + " cy=" + P.y + " r=" + circleRadius +
+                        " style=\"stroke:black; stroke-width:" + lineWidth + ";fill:none;\"></circle>\n");
                 bufferedWriter.flush();
             } catch (IOException ex) {
                 System.err.println("SVGPrinter: Could not draw circle!");

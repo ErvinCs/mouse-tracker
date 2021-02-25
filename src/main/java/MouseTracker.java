@@ -11,6 +11,7 @@ public class MouseTracker {
     private double timeSinceMoved;
     private boolean hasMoved;
     private boolean isDrawing;
+    private boolean isDrawingLine;
     private SVGPrinter svgPrinter;
 
     public MouseTracker() {
@@ -19,6 +20,7 @@ public class MouseTracker {
         timeSinceMoved = 0;
         hasMoved = false;
         isDrawing = false;
+        isDrawingLine = false;
         svgPrinter = new SVGPrinter();
     }
 
@@ -36,7 +38,7 @@ public class MouseTracker {
 
             if (hasMoved) {
                 onMoved();
-            } else {
+            } else { //if (TimeManager.hasStopTimePassed()){
                 onStay();
             }
         }
@@ -60,10 +62,19 @@ public class MouseTracker {
     }
 
     public void onMoved() {
-        svgPrinter.drawLine(previousPoint, currentPoint);
+        if (isDrawingLine) {
+            svgPrinter.continueDrawLine(currentPoint);
+        } else {
+            isDrawingLine = true;
+            svgPrinter.startDrawLine(previousPoint, currentPoint);
+        }
     }
 
     public void onStay() {
+        if (isDrawingLine) {
+            svgPrinter.finishDrawLine();
+            isDrawingLine = false;
+        }
         svgPrinter.drawCircle(currentPoint);
     }
 
