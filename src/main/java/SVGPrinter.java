@@ -57,11 +57,12 @@ public class SVGPrinter {
         }
     }
 
-    public void drawCircle(Point P) {
+    public void drawCircle(Point P, float radiusMultiplier) {
         if (!points.contains(P)) {
             points.add(P);
+            float radius = radiusMultiplier > 1 ? circleRadius * radiusMultiplier : circleRadius;
             try {
-                bufferedWriter.append("<circle cx=" + P.x + " cy=" + P.y + " r=" + circleRadius +
+                bufferedWriter.append("<circle cx=" + P.x + " cy=" + P.y + " r=" + radius +
                         " style=\"stroke:black; stroke-width:" + lineWidth + ";fill:none;\"></circle>\n");
                 bufferedWriter.flush();
             } catch (IOException ex) {

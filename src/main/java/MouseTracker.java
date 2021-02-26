@@ -1,15 +1,19 @@
 import java.awt.*;
-import java.sql.Time;
 
 /**
- * Gets the mouse coordinates every 0.05f seconds.
- * If the mouse moved then it draws a line between the two points.
- * If the mouse has not moved then it begins a DrawCircle phase, increasing the radius of the circle until the mouse is moved.
+ * Gets the mouse coordinates every according to TimeManager.Record time.
+ * Draws an svg path according to the mouse movement every TimeManager tick.
+ * If the mouse has not moved for .5s then it begins a DrawCircle phase, increasing the radius of the circle until the mouse is moved.
  */
 public class MouseTracker {
     private Point previousPoint;
     private Point currentPoint;
     private double timeSinceMoved;
+
+    private final float CIRCLE_INCREASE_PER_TICK = 0.000002f;
+    private final float CIRCLE_MAX_RADIUS = 4;
+    private float stopCircleRadiusMultiplier;
+
     private boolean hasMoved;
     private boolean isDrawing;
     private boolean isDrawingLine;
@@ -23,6 +27,7 @@ public class MouseTracker {
         isDrawing = false;
         isDrawingLine = false;
         svgPrinter = new SVGPrinter();
+        stopCircleRadiusMultiplier = 0;
     }
 
     public void begin() {
@@ -39,10 +44,14 @@ public class MouseTracker {
 
             if (hasMoved) {
                 TimeManager.reset();
+                if (stopCircleRadiusMultiplier > 0) {
+                    onStay(stopCircleRadiusMultiplier);
+                    stopCircleRadiusMultiplier = 0;
+                }
                 onMoved();
             } else {
                 if (TimeManager.hasStopTimePassed()) {
-                    onStay();
+                    stopCircleRadiusMultiplier = stopCircleRadiusMultiplier > CIRCLE_MAX_RADIUS ? CIRCLE_MAX_RADIUS : stopCircleRadiusMultiplier + CIRCLE_INCREASE_PER_TICK;
                 }
             }
         }
@@ -62,12 +71,12 @@ public class MouseTracker {
         }
     }
 
-    public void onStay() {
+    public void onStay(float circleRadiusMultiplier) {
         if (isDrawingLine) {
             svgPrinter.finishDrawLine();
             isDrawingLine = false;
         }
-        svgPrinter.drawCircle(currentPoint);
+        svgPrinter.drawCircle(currentPoint, circleRadiusMultiplier);
     }
 
     private void updateHasMoved() {
