@@ -1,9 +1,4 @@
-import org.jnativehook.GlobalScreen;
-import org.jnativehook.NativeHookException;
-
-import java.util.logging.Level;
-import java.util.logging.LogManager;
-import java.util.logging.Logger;
+import java.io.IOException;
 
 /**
  * Entry point to the program.
@@ -11,34 +6,47 @@ import java.util.logging.Logger;
  */
 public class Main {
     public static void main(String[] args) {
-        // Disable Logs
-        LogManager.getLogManager().reset();
-        Logger logger = Logger.getLogger(GlobalScreen.class.getPackage().getName());
-        logger.setLevel(Level.OFF);
-
-        // Input Keyboard Hook
-        try {
-            GlobalScreen.registerNativeHook();
-        }
-        catch (NativeHookException ex) {
-            System.err.println("There was a problem registering the native hook.");
-            System.err.println(ex.getMessage());
-
-            System.exit(1);
-        }
         InputReader inputReader = new InputReader();
-        GlobalScreen.addNativeKeyListener(inputReader);
+        inputReader.printWelcomeMessage();
+        inputReader.printInstructions();
 
-        // Instructions
-        String instructions = "R - Begin/Stop Recording \t X - Exit Application";
-        System.out.println(instructions);
-        SVGPrinter.printScreenSize();
+        boolean isRunning = true;
+        boolean isRecording = false;
+        MouseTracker mouseTracker = new MouseTracker();
 
         // Application code
-        while (inputReader.IsRunning) {
-            if (inputReader.IsRecording) {
-                inputReader.MouseTracker.update();
+        while (isRunning) {
+            try {
+                char input = inputReader.getInput();
+                switch (input) {
+                    case 'R':
+                    case 'r':
+                        if (!isRecording) {
+                            isRecording = true;
+                            mouseTracker.start();
+                        } else {
+                            isRecording = false;
+                            mouseTracker.stop();
+                        }
+                        break;
+                    case 'h':
+                    case 'H':
+                        inputReader.printInstructions();
+                        break;
+                    case 'X':
+                    case 'x':
+                        if (isRecording) {
+                            mouseTracker.stop();
+                            isRecording = false;
+                        }
+                        isRunning = false;
+                        break;
+                }
+            }catch (IOException ex) {
+                System.out.println("An issue occurred. Exception Thrown: " + ex.getMessage());
             }
         }
+
+        System.exit(0);
     }
 }

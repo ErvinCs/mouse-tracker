@@ -1,73 +1,31 @@
-import org.jnativehook.GlobalScreen;
-import org.jnativehook.NativeHookException;
-import org.jnativehook.keyboard.NativeKeyEvent;
-import org.jnativehook.keyboard.NativeKeyListener;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 
 /**
  * Controls the program execution according to keyboard input.
  * R - Begin/Stop Recording
  * X - Exit Application
  */
-public class InputReader implements NativeKeyListener {
-    public MouseTracker MouseTracker;
-    public boolean IsRunning;
-    public boolean IsRecording;
+public class InputReader {
+    private BufferedReader reader;
+    private char input;
 
     public InputReader() {
-        MouseTracker = new MouseTracker();
-        IsRunning = true;
-        IsRecording = false;
+        reader = new BufferedReader(new InputStreamReader(System.in));
     }
 
-    public void ToggleRecording() {
-        if (!IsRecording) {
-            System.out.println("Recording Started");
-            IsRecording = true;
-            MouseTracker.begin();
-        } else {
-            System.out.println("Recording Ended");
-            IsRecording = false;
-            MouseTracker.end();
-        }
+    public void printWelcomeMessage() {
+        System.out.println("Enter a command and hit enter.\n" + "The application will record your mouse in the background.\n" +
+                "A new file is created in the application directory for each recording\n");
     }
 
-    // -------------------- KEYBOARD EVENTS --------------------
-
-    @Override
-    public void nativeKeyPressed(NativeKeyEvent nativeKeyEvent) {
-        switch (nativeKeyEvent.getKeyCode())
-        {
-            case NativeKeyEvent.VC_X:
-                // Exit
-                try {
-                    GlobalScreen.unregisterNativeHook();
-                } catch (NativeHookException nativeHookException) {
-                    nativeHookException.printStackTrace();
-                }
-                if (IsRecording) {
-                    System.out.println("Recording Ended");
-                    IsRecording = false;
-                    MouseTracker.end();
-                }
-                IsRunning = false;
-                System.out.println("Application Shutting Down");
-                System.exit(0);
-                break;
-
-            case NativeKeyEvent.VC_R:
-                // Toggle Recording
-                ToggleRecording();
-                break;
-        }
+    public void printInstructions() {
+        System.out.println("R - Begin/Stop Recording \t H - Help \t X - Exit Application\n");
     }
 
-    @Override
-    public void nativeKeyReleased(NativeKeyEvent nativeKeyEvent) {
-        //Not Implemeneted
-    }
-
-    @Override
-    public void nativeKeyTyped(NativeKeyEvent nativeKeyEvent) {
-        //Not Implemented
+    public char getInput() throws IOException {
+        input = (char)reader.read();
+        return input;
     }
 }

@@ -32,19 +32,15 @@ public class SVGPrinter {
         points = new HashSet<>();
         lastPoint = null;
         initScreenSize();
-    }
-
-    public static void printScreenSize() {
-        System.out.println("Screen Width = " + screenWidth);
-        System.out.println("Screen Height = " + screenHeight + "\n");
+        printScreenSize();
     }
 
     public void startDrawLine(Point A, Point B) {
         try {
-            System.out.println("Start draw line");
+            //System.out.println("Start draw line");
             bufferedWriter.append("<path d=\"M" + A.x + " " + A.y + " L" + B.x + " " + B.y);
 
-            System.out.println("Line Started Drawing At: X=" + A.x + " Y=" + A.y);
+            //System.out.println("Line Started Drawing At: X=" + A.x + " Y=" + A.y);
             lastPoint = B;
         }catch (IOException ex) {
             System.err.println("SVGPrinter: Failed on StartDrawLine!");
@@ -53,7 +49,7 @@ public class SVGPrinter {
 
     public void continueDrawLine(Point C) {
         try {
-            System.out.println("Continue draw line");
+            //System.out.println("Continue draw line");
             bufferedWriter.append(" L" + C.x + " " + C.y);
             lastPoint = C;
         }catch (IOException ex) {
@@ -63,12 +59,12 @@ public class SVGPrinter {
 
     public void finishDrawLine() {
         try {
-            System.out.println("FinishDrawLine");
+            //System.out.println("FinishDrawLine");
 
             bufferedWriter.append("\" style=\"stroke:black;stroke-width:2;fill:none;\"></path>\n");
             bufferedWriter.flush();
 
-            System.out.println("Line Finished Drawing At: X=" + lastPoint.x + " Y=" + lastPoint.y);
+            //System.out.println("Line Finished Drawing At: X=" + lastPoint.x + " Y=" + lastPoint.y);
         }catch (IOException ex) {
             System.err.println("SVGPrinter: Failed on ContinueDrawLine!");
         }
@@ -76,7 +72,7 @@ public class SVGPrinter {
 
     public void drawCircle(Point P, float radiusMultiplier) {
         if (!points.contains(P)) {
-            System.out.println("Draw circleR");
+            //System.out.println("Draw circle");
             points.add(P);
             float radius = radiusMultiplier > 1 ? circleRadius * radiusMultiplier : circleRadius;
             try {
@@ -84,7 +80,7 @@ public class SVGPrinter {
                         " style=\"stroke:black; stroke-width:" + lineWidth + ";fill:none;\"></circle>\n");
                 bufferedWriter.flush();
 
-                System.out.println("Circle Drawn At: X=" + P.x + " Y=" + P.y + " Radius=" + radius);
+                //System.out.println("Circle Drawn At: X=" + P.x + " Y=" + P.y + " Radius=" + radius);
             } catch (IOException ex) {
                 System.err.println("SVGPrinter: Could not draw circle!");
             }
@@ -152,5 +148,10 @@ public class SVGPrinter {
 
         screenWidth = screen.width;
         screenHeight = screen.height;
+    }
+
+    private void printScreenSize() {
+        System.out.println("Screen Width = " + screenWidth);
+        System.out.println("Screen Height = " + screenHeight + "\n");
     }
 }
