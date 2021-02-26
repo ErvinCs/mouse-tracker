@@ -1,4 +1,5 @@
 import java.awt.*;
+import java.sql.Time;
 
 /**
  * Gets the mouse coordinates every according to TimeManager.Record time.
@@ -10,7 +11,7 @@ public class MouseTracker {
     private Point currentPoint;
     private double timeSinceMoved;
 
-    private final float CIRCLE_INCREASE_PER_TICK = 0.000002f;
+    private final float CIRCLE_INCREASE_PER_TICK = 0.0002f / TimeManager.RecordTimeDivider;
     private final float CIRCLE_MAX_RADIUS = 4;
     private float stopCircleRadiusMultiplier;
 
