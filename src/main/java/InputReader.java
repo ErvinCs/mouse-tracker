@@ -1,51 +1,31 @@
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 
 /**
  * Controls the program execution according to keyboard input.
  * R - Begin/Stop Recording
- * S - Save Recording to SVG
  * X - Exit Application
  */
-public class InputReader implements KeyListener  {
-    private boolean isRecording;
-    private MouseTracker mouseTracker;
+public class InputReader {
+    private BufferedReader reader;
+    private char input;
 
-    public InputReader(MouseTracker mouseTracker) {
-        isRecording = false;
-        this.mouseTracker = mouseTracker;
+    public InputReader() {
+        reader = new BufferedReader(new InputStreamReader(System.in));
     }
 
-    public void ToggleRecoding() {
-        if (!isRecording) {
-            isRecording = true;
-            mouseTracker.begin();
-        } else {
-            isRecording = false;
-            mouseTracker.end();
-        }
+    public void printWelcomeMessage() {
+        System.out.println("Enter a command and hit enter.\n" + "The application will record your mouse in the background.\n" +
+                "A new file is created in the application directory for each recording\n");
     }
 
-    public void keyPressed(KeyEvent e) {
-        char key = e.getKeyChar();
-        switch (key)
-        {
-            case 'x':
-            case 'X':
-                System.exit(0);
-                break;
-            case 'r':
-            case 'R':
-                ToggleRecoding();
-                break;
-        }
+    public void printInstructions() {
+        System.out.println("R - Begin/Stop Recording \t H - Help \t X - Exit Application\n");
     }
 
-    public void keyReleased(KeyEvent e) {
-        System.out.println("...");
-    }
-
-    public void keyTyped(KeyEvent e) {
-        System.out.println("...");
+    public char getInput() throws IOException {
+        input = (char)reader.read();
+        return input;
     }
 }
