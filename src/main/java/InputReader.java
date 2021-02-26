@@ -9,11 +9,17 @@ import org.jnativehook.keyboard.NativeKeyListener;
  * X - Exit Application
  */
 public class InputReader implements NativeKeyListener {
-    public static MouseTracker MouseTracker = new MouseTracker();
-    public static boolean IsRunning = true;
-    public static boolean IsRecording = false;
+    public MouseTracker MouseTracker;
+    public boolean IsRunning;
+    public boolean IsRecording;
 
-    public static void ToggleRecording() {
+    public InputReader() {
+        MouseTracker = new MouseTracker();
+        IsRunning = true;
+        IsRecording = false;
+    }
+
+    public void ToggleRecording() {
         if (!IsRecording) {
             System.out.println("Recording Started");
             IsRecording = true;
@@ -24,6 +30,8 @@ public class InputReader implements NativeKeyListener {
             MouseTracker.end();
         }
     }
+
+    // -------------------- KEYBOARD EVENTS --------------------
 
     @Override
     public void nativeKeyPressed(NativeKeyEvent nativeKeyEvent) {
@@ -36,8 +44,14 @@ public class InputReader implements NativeKeyListener {
                 } catch (NativeHookException nativeHookException) {
                     nativeHookException.printStackTrace();
                 }
-                System.out.println("Application Shutting Down");
+                if (IsRecording) {
+                    System.out.println("Recording Ended");
+                    IsRecording = false;
+                    MouseTracker.end();
+                }
                 IsRunning = false;
+                System.out.println("Application Shutting Down");
+                System.exit(0);
                 break;
 
             case NativeKeyEvent.VC_R:

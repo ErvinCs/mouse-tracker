@@ -1,5 +1,4 @@
 import java.awt.*;
-import java.sql.Time;
 
 /**
  * Gets the mouse coordinates every according to TimeManager.Record time.

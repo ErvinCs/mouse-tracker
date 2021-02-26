@@ -35,12 +35,10 @@ public class Main {
         SVGPrinter.printScreenSize();
 
         // Application code
-        while (InputReader.IsRunning) {
-            if (InputReader.IsRecording) {
-                InputReader.MouseTracker.update();
+        while (inputReader.IsRunning) {
+            if (inputReader.IsRecording) {
+                inputReader.MouseTracker.update();
             }
         }
-
-        System.exit(0);
     }
 }
