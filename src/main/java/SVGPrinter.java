@@ -24,9 +24,8 @@ public class SVGPrinter {
     private Point lastPoint;
     private Set<Point> points;
 
-    private int screenWidth;
-    private int screenHeight;
-
+    private static int screenWidth;
+    private static int screenHeight;
 
     public SVGPrinter() {
         lineWidth = 2;
@@ -36,27 +35,14 @@ public class SVGPrinter {
         initScreenSize();
     }
 
-    private void initScreenSize() {
-        int minx=0, miny=0, maxx=0, maxy=0;
-        GraphicsEnvironment environment = GraphicsEnvironment.getLocalGraphicsEnvironment();
-        for(GraphicsDevice device : environment.getScreenDevices()){
-            Rectangle bounds = device.getDefaultConfiguration().getBounds();
-            minx = Math.min(minx, bounds.x);
-            miny = Math.min(miny, bounds.y);
-            maxx = Math.max(maxx,  bounds.x+bounds.width);
-            maxy = Math.max(maxy, bounds.y+bounds.height);
-        }
-        Rectangle screen = new Rectangle(minx, miny, maxx-minx, maxy-miny);
-
-        screenWidth = screen.width;
-        screenHeight = screen.height;
-
+    public static void printScreenSize() {
         System.out.println("Screen Width = " + screenWidth);
         System.out.println("Screen Height = " + screenHeight + "\n");
     }
 
     public void startDrawLine(Point A, Point B) {
         try {
+            System.out.println("Start draw line");
             bufferedWriter.append("<path d=\"M" + A.x + " " + A.y + " L" + B.x + " " + B.y);
 
             System.out.println("Line Started Drawing At: X=" + A.x + " Y=" + A.y);
@@ -68,6 +54,7 @@ public class SVGPrinter {
 
     public void continueDrawLine(Point C) {
         try {
+            System.out.println("Continue draw line");
             bufferedWriter.append(" L" + C.x + " " + C.y);
             lastPoint = C;
         }catch (IOException ex) {
@@ -77,7 +64,10 @@ public class SVGPrinter {
 
     public void finishDrawLine() {
         try {
+            System.out.println("FinishDrawLine");
+
             bufferedWriter.append("\" style=\"stroke:black;stroke-width:2;fill:none;\"></path>\n");
+            bufferedWriter.flush();
 
             System.out.println("Line Finished Drawing At: X=" + lastPoint.x + " Y=" + lastPoint.y);
         }catch (IOException ex) {
@@ -87,6 +77,7 @@ public class SVGPrinter {
 
     public void drawCircle(Point P, float radiusMultiplier) {
         if (!points.contains(P)) {
+            System.out.println("Draw circleR");
             points.add(P);
             float radius = radiusMultiplier > 1 ? circleRadius * radiusMultiplier : circleRadius;
             try {
@@ -146,5 +137,21 @@ public class SVGPrinter {
         DateTimeFormatter dtf = DateTimeFormatter.ofPattern("ddMMyyyyHHmmss");
         LocalDateTime now = LocalDateTime.now();
         return dtf.format(now);
+    }
+
+    private void initScreenSize() {
+        int minx=0, miny=0, maxx=0, maxy=0;
+        GraphicsEnvironment environment = GraphicsEnvironment.getLocalGraphicsEnvironment();
+        for(GraphicsDevice device : environment.getScreenDevices()){
+            Rectangle bounds = device.getDefaultConfiguration().getBounds();
+            minx = Math.min(minx, bounds.x);
+            miny = Math.min(miny, bounds.y);
+            maxx = Math.max(maxx,  bounds.x+bounds.width);
+            maxy = Math.max(maxy, bounds.y+bounds.height);
+        }
+        Rectangle screen = new Rectangle(minx, miny, maxx-minx, maxy-miny);
+
+        screenWidth = screen.width;
+        screenHeight = screen.height;
     }
 }

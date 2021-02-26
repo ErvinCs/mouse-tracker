@@ -1,51 +1,59 @@
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
+import org.jnativehook.GlobalScreen;
+import org.jnativehook.NativeHookException;
+import org.jnativehook.keyboard.NativeKeyEvent;
+import org.jnativehook.keyboard.NativeKeyListener;
 
 /**
  * Controls the program execution according to keyboard input.
  * R - Begin/Stop Recording
- * S - Save Recording to SVG
  * X - Exit Application
  */
-public class InputReader implements KeyListener  {
-    private boolean isRecording;
-    private MouseTracker mouseTracker;
+public class InputReader implements NativeKeyListener {
+    public static MouseTracker MouseTracker = new MouseTracker();
+    public static boolean IsRunning = true;
+    public static boolean IsRecording = false;
 
-    public InputReader(MouseTracker mouseTracker) {
-        isRecording = false;
-        this.mouseTracker = mouseTracker;
-    }
-
-    public void ToggleRecoding() {
-        if (!isRecording) {
-            isRecording = true;
-            mouseTracker.begin();
+    public static void ToggleRecording() {
+        if (!IsRecording) {
+            System.out.println("Recording Started");
+            IsRecording = true;
+            MouseTracker.begin();
         } else {
-            isRecording = false;
-            mouseTracker.end();
+            System.out.println("Recording Ended");
+            IsRecording = false;
+            MouseTracker.end();
         }
     }
 
-    public void keyPressed(KeyEvent e) {
-        char key = e.getKeyChar();
-        switch (key)
+    @Override
+    public void nativeKeyPressed(NativeKeyEvent nativeKeyEvent) {
+        switch (nativeKeyEvent.getKeyCode())
         {
-            case 'x':
-            case 'X':
-                System.exit(0);
+            case NativeKeyEvent.VC_X:
+                // Exit
+                try {
+                    GlobalScreen.unregisterNativeHook();
+                } catch (NativeHookException nativeHookException) {
+                    nativeHookException.printStackTrace();
+                }
+                System.out.println("Application Shutting Down");
+                IsRunning = false;
                 break;
-            case 'r':
-            case 'R':
-                ToggleRecoding();
+
+            case NativeKeyEvent.VC_R:
+                // Toggle Recording
+                ToggleRecording();
                 break;
         }
     }
 
-    public void keyReleased(KeyEvent e) {
-        System.out.println("...");
+    @Override
+    public void nativeKeyReleased(NativeKeyEvent nativeKeyEvent) {
+        //Not Implemeneted
     }
 
-    public void keyTyped(KeyEvent e) {
-        System.out.println("...");
+    @Override
+    public void nativeKeyTyped(NativeKeyEvent nativeKeyEvent) {
+        //Not Implemented
     }
 }
