@@ -8,22 +8,22 @@ public class Main {
 
     public static void main(String[] args) {
         MouseTracker mouseTracker = new MouseTracker();
-        InputReader kbInputReader = new InputReader(mouseTracker);
+        InputReader inputReader = new InputReader(mouseTracker);
 
         boolean isRunning = true;
 
         String instructions = "R - Begin/Stop Recording \t X - Exit Application";
         System.out.println(instructions);
 
-        kbInputReader.ToggleRecoding();
+        inputReader.ToggleRecoding();
 
         TimeManager.reset();
         while (isRunning) {
             // If pressed X then Exit
-            // If pressed R then kbInputReader.ToggleRecording();
+            // If pressed R then inputReader.ToggleRecording();
             mouseTracker.update();
         }
 
-        //kbInputReader.ToggleRecoding();
+        //inputReader.ToggleRecoding();
     }
 }

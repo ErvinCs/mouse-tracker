@@ -3,6 +3,7 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.sql.SQLOutput;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.HashSet;
@@ -16,18 +17,22 @@ public class SVGPrinter {
     private File file;
     private String filename;
     private BufferedWriter bufferedWriter;
+
     private int lineWidth;
     private int circleRadius;
+
+    private Point lastPoint;
+    private Set<Point> points;
 
     private int screenWidth;
     private int screenHeight;
 
-    private Set<Point> points;
 
     public SVGPrinter() {
         lineWidth = 2;
         circleRadius = 10;
         points = new HashSet<>();
+        lastPoint = null;
         initScreenSize();
     }
 
@@ -47,12 +52,15 @@ public class SVGPrinter {
         screenHeight = screen.height;
 
         System.out.println("Screen Width = " + screenWidth);
-        System.out.println("Screen Height = " + screenHeight);
+        System.out.println("Screen Height = " + screenHeight + "\n");
     }
 
     public void startDrawLine(Point A, Point B) {
         try {
             bufferedWriter.append("<path d=\"M" + A.x + " " + A.y + " L" + B.x + " " + B.y);
+
+            System.out.println("Line Started Drawing At: X=" + A.x + " Y=" + A.y);
+            lastPoint = B;
         }catch (IOException ex) {
             System.err.println("SVGPrinter: Failed on StartDrawLine!");
         }
@@ -61,6 +69,7 @@ public class SVGPrinter {
     public void continueDrawLine(Point C) {
         try {
             bufferedWriter.append(" L" + C.x + " " + C.y);
+            lastPoint = C;
         }catch (IOException ex) {
             System.err.println("SVGPrinter: Failed on ContinueDrawLine!");
         }
@@ -69,6 +78,8 @@ public class SVGPrinter {
     public void finishDrawLine() {
         try {
             bufferedWriter.append("\" style=\"stroke:black;stroke-width:2;fill:none;\"></path>\n");
+
+            System.out.println("Line Finished Drawing At: X=" + lastPoint.x + " Y=" + lastPoint.y);
         }catch (IOException ex) {
             System.err.println("SVGPrinter: Failed on ContinueDrawLine!");
         }
@@ -82,6 +93,8 @@ public class SVGPrinter {
                 bufferedWriter.append("<circle cx=" + P.x + " cy=" + P.y + " r=" + radius +
                         " style=\"stroke:black; stroke-width:" + lineWidth + ";fill:none;\"></circle>\n");
                 bufferedWriter.flush();
+
+                System.out.println("Circle Drawn At: X=" + P.x + " Y=" + P.y + " Radius=" + radius);
             } catch (IOException ex) {
                 System.err.println("SVGPrinter: Could not draw circle!");
             }
@@ -97,6 +110,8 @@ public class SVGPrinter {
             bufferedWriter.flush();
             bufferedWriter.close();
             points.clear();
+
+            System.out.println("Finished Writing File: " + filename + "\n");
         } catch (IOException ex)
         {
             System.err.println("SVGPrinter: An issue occured while saving the file!");
@@ -118,6 +133,9 @@ public class SVGPrinter {
             bufferedWriter.write("<!DOCTYPE html>\n");
             bufferedWriter.append("<html>\n  <head>\n    <title>SVGPrint</title>\n  </head>\n");
             bufferedWriter.append("  <body>\n    <svg width=\"" + screenWidth + "\" height=\"" + screenHeight + "\">\n");
+            bufferedWriter.flush();
+
+            System.out.println("File Created: " + filename + "\n");
         } catch (IOException ex)
         {
             System.err.println("SVGPrinter: An issue occured while initializing the file!");
