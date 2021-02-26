@@ -6,12 +6,11 @@ import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.HashSet;
-import java.util.Map;
 import java.util.Set;
 
 /**
  * Creates files and writes SVG data to them according to the given pointer information.
- * Can draw lines to depict mouse movement or circles to show that the mouse has not moved for more than half a second.
+ * Can draw lines to depict mouse movement or circles to show that the mouse has not moved.
  */
 public class SVGPrinter {
     private File file;
@@ -20,8 +19,8 @@ public class SVGPrinter {
     private int lineWidth;
     private int circleRadius;
 
-    private float screenWidth = 1600;
-    private float screenHeight = 900;
+    private int screenWidth;
+    private int screenHeight;
 
     private Set<Point> points;
 
@@ -29,8 +28,26 @@ public class SVGPrinter {
         lineWidth = 2;
         circleRadius = 10;
         points = new HashSet<>();
-        //TODO - Init screenWidth
-        //TODO - Init screenHeight
+        initScreenSize();
+    }
+
+    private void initScreenSize() {
+        int minx=0, miny=0, maxx=0, maxy=0;
+        GraphicsEnvironment environment = GraphicsEnvironment.getLocalGraphicsEnvironment();
+        for(GraphicsDevice device : environment.getScreenDevices()){
+            Rectangle bounds = device.getDefaultConfiguration().getBounds();
+            minx = Math.min(minx, bounds.x);
+            miny = Math.min(miny, bounds.y);
+            maxx = Math.max(maxx,  bounds.x+bounds.width);
+            maxy = Math.max(maxy, bounds.y+bounds.height);
+        }
+        Rectangle screen = new Rectangle(minx, miny, maxx-minx, maxy-miny);
+
+        screenWidth = screen.width;
+        screenHeight = screen.height;
+
+        System.out.println("Screen Width = " + screenWidth);
+        System.out.println("Screen Height = " + screenHeight);
     }
 
     public void startDrawLine(Point A, Point B) {
