@@ -3,7 +3,7 @@
  */
 public class TimeManager {
     public static long RecordTime = 1000000000 / 80;
-    //public static long StopTime = 1000000000 / 2;
+    public static long StopTime = 1000000000 / 2;
 
     private static long lastTime;
 
@@ -23,5 +23,5 @@ public class TimeManager {
         return deltaTime() >= RecordTime;
     }
 
-    //public static boolean hasStopTimePassed() { return deltaTime() >= StopTime;}
+    public static boolean hasStopTimePassed() { return deltaTime() >= StopTime;}
 }

@@ -24,29 +24,13 @@ public class SVGPrinter {
     private float screenHeight = 900;
 
     private Set<Point> points;
-    private boolean hasStopped;
 
     public SVGPrinter() {
         lineWidth = 2;
         circleRadius = 10;
         points = new HashSet<>();
-    }
-
-    public void setHasStopped(boolean hasStopped) {
-        this.hasStopped = hasStopped;
-    }
-
-    @Deprecated
-    public void drawLine(Point A, Point B) {
-        System.out.println("SVGPrinter::drawLine - Is Deprecated!");
-
-        try {
-            bufferedWriter.append("<line x1=\"" + A.x + "\" y1=\"" + A.y + "\" x2=\"" + B.x + "\" y2=\"" + B.y + "\"" +
-                    "style=\"stroke:black; stroke-width:" + lineWidth + "\"></line>\n");
-            bufferedWriter.flush();
-        }catch (IOException ex) {
-            System.err.println("SVGPrinter: Could not draw line!");
-        }
+        //TODO - Init screenWidth
+        //TODO - Init screenHeight
     }
 
     public void startDrawLine(Point A, Point B) {

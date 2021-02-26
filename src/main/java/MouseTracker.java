@@ -1,4 +1,5 @@
 import java.awt.*;
+import java.sql.Time;
 
 /**
  * Gets the mouse coordinates every 0.05f seconds.
@@ -37,9 +38,12 @@ public class MouseTracker {
             timeSinceMoved = hasMoved ? 0 : timeSinceMoved + TimeManager.deltaTime();
 
             if (hasMoved) {
+                TimeManager.reset();
                 onMoved();
-            } else { //if (TimeManager.hasStopTimePassed()){
-                onStay();
+            } else {
+                if (TimeManager.hasStopTimePassed()) {
+                    onStay();
+                }
             }
         }
     }
@@ -47,18 +51,6 @@ public class MouseTracker {
     public void end() {
         isDrawing = false;
         svgPrinter.endDrawing();
-    }
-
-    public Point getPreviousPoint() {
-        return previousPoint;
-    }
-
-    public Point getCurrentPoint() {
-        return currentPoint;
-    }
-
-    public double getTimeSinceMoved() {
-        return timeSinceMoved;
     }
 
     public void onMoved() {
@@ -82,7 +74,6 @@ public class MouseTracker {
         if (previousPoint.x == currentPoint.x && previousPoint.y == currentPoint.y) {
             hasMoved = false;
         } else {
-            TimeManager.reset();
             hasMoved = true;
         }
     }
