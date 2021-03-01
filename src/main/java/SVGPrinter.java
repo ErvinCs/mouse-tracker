@@ -38,7 +38,7 @@ public class SVGPrinter {
     public void startDrawLine(Point A, Point B) {
         try {
             //System.out.println("Start draw line");
-            bufferedWriter.append("<path d=\"M" + A.x + " " + A.y + " L" + B.x + " " + B.y);
+            bufferedWriter.append("  <path d=\"M" + A.x + " " + A.y + " L" + B.x + " " + B.y);
 
             //System.out.println("Line Started Drawing At: X=" + A.x + " Y=" + A.y);
             lastPoint = B;
@@ -77,7 +77,7 @@ public class SVGPrinter {
             points.add(P);
             float radius = radiusMultiplier > 1 ? circleRadius * radiusMultiplier : circleRadius;
             try {
-                bufferedWriter.append("<circle cx=" + P.x + " cy=" + P.y + " r=" + radius +
+                bufferedWriter.append("  <circle cx=" + P.x + " cy=" + P.y + " r=" + radius +
                         " style=\"stroke:black; stroke-width:" + lineWidth + ";fill:none;\"></circle>\n");
                 bufferedWriter.flush();
 
@@ -92,8 +92,7 @@ public class SVGPrinter {
     public void endDrawing() {
         try
         {
-            bufferedWriter.append("    </svg>\n  </body>\n");
-            bufferedWriter.append("</html>");
+            bufferedWriter.append("</svg>\n");
             bufferedWriter.flush();
             bufferedWriter.close();
             points.clear();
@@ -108,7 +107,7 @@ public class SVGPrinter {
     public void beginDrawing() {
         filename = generateFilename();
 
-        file = new File(filename + ".html");
+        file = new File(filename + ".svg");
         try {
             bufferedWriter = new BufferedWriter(new FileWriter(file));
         }catch (IOException ex) {
@@ -117,9 +116,10 @@ public class SVGPrinter {
 
         try
         {
-            bufferedWriter.write("<!DOCTYPE html>\n");
-            bufferedWriter.append("<html>\n  <head>\n    <title>SVGPrint</title>\n  </head>\n");
-            bufferedWriter.append("  <body>\n    <svg width=\"" + screenWidth + "\" height=\"" + screenHeight + "\">\n");
+            bufferedWriter.write("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n");
+            bufferedWriter.append("<!DOCTYPE svg PUBLIC \"-//W3C//DTD SVG 1.0//EN\" \n" +
+                    "         \"http://www.w3.org/TR/2001/REC-SVG-20010904/DTD/svg10.dtd\">\n");
+            bufferedWriter.append("<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"" + screenWidth+ "\" height=\"" + screenHeight + "\">\n");
             bufferedWriter.flush();
 
             System.out.println("File Created: " + filename + "\n");
