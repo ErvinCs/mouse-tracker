@@ -3,8 +3,8 @@ import java.io.*;
 
 
 public class ResolutionConverter {
-    private static int targetWidth = SVGPrinter.screenWidth * 2; //3840;
-    private static int targetHeight = SVGPrinter.screenHeight * 2; //2160;
+    private static int targetWidth = SVGPrinter.screenWidth * 4; //3840;
+    private static int targetHeight = SVGPrinter.screenHeight * 4; //2160;
     private static String extension = "_enlarged.svg";
 
     private static BufferedWriter bufferedWriter;

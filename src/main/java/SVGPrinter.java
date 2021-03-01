@@ -28,7 +28,7 @@ public class SVGPrinter {
     public static int numberOfDevices;
 
     public SVGPrinter() {
-        lineWidth = 1;
+        lineWidth = 0.3f;
         circleRadius = 10;
         points = new HashSet<>();
         lastPoint = null;
