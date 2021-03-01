@@ -17,14 +17,15 @@ public class SVGPrinter {
     private String filename;
     private BufferedWriter bufferedWriter;
 
-    private int lineWidth;
-    private int circleRadius;
+    private float lineWidth;
+    private float circleRadius;
 
     private Point lastPoint;
     private Set<Point> points;
 
-    private static int screenWidth;
-    private static int screenHeight;
+    public static int screenWidth;
+    public static int screenHeight;
+    public static int numberOfDevices;
 
     public SVGPrinter() {
         lineWidth = 1;
@@ -97,6 +98,8 @@ public class SVGPrinter {
             bufferedWriter.close();
             points.clear();
 
+            ResolutionConverter.convertTo4K(file, screenWidth, screenHeight, numberOfDevices, lineWidth);
+
             System.out.println("Finished Writing File: " + filename + "\n");
         } catch (IOException ex)
         {
@@ -138,6 +141,7 @@ public class SVGPrinter {
     private void initScreenSize() {
         int minx=0, miny=0, maxx=0, maxy=0;
         GraphicsEnvironment environment = GraphicsEnvironment.getLocalGraphicsEnvironment();
+        numberOfDevices = GraphicsEnvironment.getLocalGraphicsEnvironment().getScreenDevices().length;
         for(GraphicsDevice device : environment.getScreenDevices()){
             Rectangle bounds = device.getDefaultConfiguration().getBounds();
             minx = Math.min(minx, bounds.x);
