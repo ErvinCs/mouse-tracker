@@ -140,20 +140,33 @@ public class SVGPrinter {
     }
 
     private void initScreenSize() {
-        int minx=0, miny=0, maxx=0, maxy=0;
-        GraphicsEnvironment environment = GraphicsEnvironment.getLocalGraphicsEnvironment();
-        numberOfDevices = GraphicsEnvironment.getLocalGraphicsEnvironment().getScreenDevices().length;
-        for(GraphicsDevice device : environment.getScreenDevices()){
-            Rectangle bounds = device.getDefaultConfiguration().getBounds();
-            minx = Math.min(minx, bounds.x);
-            miny = Math.min(miny, bounds.y);
-            maxx = Math.max(maxx,  bounds.x+bounds.width);
-            maxy = Math.max(maxy, bounds.y+bounds.height);
-        }
-        Rectangle screen = new Rectangle(minx, miny, maxx-minx, maxy-miny);
+//        int minx=0, miny=0, maxx=0, maxy=0;
+//        GraphicsEnvironment environment = GraphicsEnvironment.getLocalGraphicsEnvironment();
+//        numberOfDevices = GraphicsEnvironment.getLocalGraphicsEnvironment().getScreenDevices().length;
+//        for(GraphicsDevice device : environment.getScreenDevices()){
+//            Rectangle bounds = device.getDefaultConfiguration().getBounds();
+//            minx = Math.min(minx, bounds.x);
+//            miny = Math.min(miny, bounds.y);
+//            maxx = Math.max(maxx,  bounds.x+bounds.width);
+//            maxy = Math.max(maxy, bounds.y+bounds.height);
+//        }
+//        Rectangle screen = new Rectangle(minx, miny, maxx-minx, maxy-miny);
+//
+//        screenWidth = screen.width;
+//        screenHeight = screen.height;
 
-        screenWidth = screen.width;
-        screenHeight = screen.height;
+        Rectangle virtualBounds = new Rectangle();
+        GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
+        GraphicsDevice[] gs = ge.getScreenDevices();
+        for (int j = 0; j < gs.length; j++) {
+            GraphicsDevice gd = gs[j];
+            GraphicsConfiguration[] gc = gd.getConfigurations();
+            for (int i=0; i < gc.length; i++) {
+                virtualBounds = virtualBounds.union(gc[i].getBounds());
+            }
+        }
+        screenWidth = virtualBounds.width;
+        screenHeight = virtualBounds.height;
     }
 
     private void printScreenSize() {
