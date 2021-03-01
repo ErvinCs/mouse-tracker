@@ -14,7 +14,7 @@ public class MouseTracker implements Runnable {
     private Point currentPoint;
     private double timeSinceMoved;
 
-    private final float CIRCLE_INCREASE_PER_TICK = 0.00072f / TimeManager.RecordTimeDivider;
+    private final float CIRCLE_INCREASE_PER_TICK = 0.00075f / TimeManager.RecordTimeDivider;
     private final float CIRCLE_MAX_RADIUS = 4;
     private float stopCircleRadiusMultiplier;
 
@@ -70,7 +70,7 @@ public class MouseTracker implements Runnable {
                 if (hasMoved) {
                     TimeManager.reset();
                     if (stopCircleRadiusMultiplier > 0) {
-                        onStay(stopCircleRadiusMultiplier);
+                        //onStay(stopCircleRadiusMultiplier);
                         stopCircleRadiusMultiplier = 0;
                     }
                     onMoved();
@@ -93,6 +93,7 @@ public class MouseTracker implements Runnable {
         }
     }
 
+    @Deprecated
     public void onStay(float circleRadiusMultiplier) {
         if (isDrawingLine) {
             svgPrinter.finishDrawLine();

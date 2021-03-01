@@ -27,7 +27,7 @@ public class SVGPrinter {
     private static int screenHeight;
 
     public SVGPrinter() {
-        lineWidth = 2;
+        lineWidth = 1;
         circleRadius = 10;
         points = new HashSet<>();
         lastPoint = null;
@@ -61,7 +61,7 @@ public class SVGPrinter {
         try {
             //System.out.println("FinishDrawLine");
 
-            bufferedWriter.append("\" style=\"stroke:black;stroke-width:2;fill:none;\"></path>\n");
+            bufferedWriter.append("\" style=\"stroke:black;stroke-width:" + lineWidth + ";fill:none;\"></path>\n");
             bufferedWriter.flush();
 
             //System.out.println("Line Finished Drawing At: X=" + lastPoint.x + " Y=" + lastPoint.y);
@@ -70,6 +70,7 @@ public class SVGPrinter {
         }
     }
 
+    @Deprecated
     public void drawCircle(Point P, float radiusMultiplier) {
         if (!points.contains(P)) {
             //System.out.println("Draw circle");
