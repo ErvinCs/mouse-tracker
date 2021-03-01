@@ -16,7 +16,7 @@ public class InputReader {
     }
 
     public void printWelcomeMessage() {
-        System.out.println("Enter a command and hit enter.\n" + "The application will record your mouse in the background.\n" +
+        System.out.println("\nEnter a command and hit enter.\n" + "The application will record your mouse in the background.\n" +
                 "A new file is created in the application directory for each recording\n");
     }
 

@@ -28,7 +28,7 @@ public class SVGPrinter {
     public static int numberOfDevices;
 
     public SVGPrinter() {
-        lineWidth = 0.3f;
+        lineWidth = 0.4f;
         circleRadius = 10;
         points = new HashSet<>();
         lastPoint = null;
@@ -98,9 +98,10 @@ public class SVGPrinter {
             bufferedWriter.close();
             points.clear();
 
+            System.out.println("Finished writing file: " + filename + "\n");
+
             ResolutionConverter.convertTo4K(file, screenWidth, screenHeight, numberOfDevices, lineWidth);
 
-            System.out.println("Finished Writing File: " + filename + "\n");
         } catch (IOException ex)
         {
             System.err.println("SVGPrinter: An issue occured while saving the file!");

@@ -12,6 +12,8 @@ public class ResolutionConverter {
 
     public static void convertTo4K(File file, int totalScreenWidth, int totalScreenHeight, int numberOfDevices, float lineWidth) {
         // Create new file at 4k resolution
+        System.out.println("Converting to virtual screen resolution\n");
+
         int width = targetWidth;
         int height = targetHeight;
         String newName = file.getName();
@@ -24,7 +26,7 @@ public class ResolutionConverter {
         }
 
         System.out.println("Virtual Screen Width: " + targetWidth);
-        System.out.println("Virtual Screen Height: " + targetHeight);
+        System.out.println("Virtual Screen Height: " + targetHeight + "\n");
 
         // Open newFile for writing and file for reading
         File newFile = new File(newName);
@@ -113,6 +115,7 @@ public class ResolutionConverter {
         } catch (IOException ex) {
             System.err.println("ResolutionConverter: Aan issue occured while converting the file! " + ex.getMessage());
         }
+        System.out.println("File converted. Created file: " + newName + "\n");
     }
 
     private static Point convertPointTo4K(Point point) {
