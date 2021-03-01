@@ -3,17 +3,17 @@ import java.io.*;
 
 
 public class ResolutionConverter {
-    private static final int width4k = 3840;
-    private static final int height4k = 2160;
-    private static final String extension = "_4K.svg";
+    private static int targetWidth = SVGPrinter.screenWidth * 2; //3840;
+    private static int targetHeight = SVGPrinter.screenHeight * 2; //2160;
+    private static String extension = "_enlarged.svg";
 
     private static BufferedWriter bufferedWriter;
     private static BufferedReader bufferedReader;
 
     public static void convertTo4K(File file, int totalScreenWidth, int totalScreenHeight, int numberOfDevices, float lineWidth) {
         // Create new file at 4k resolution
-        int width = width4k * numberOfDevices;
-        int height = height4k * numberOfDevices;
+        int width = targetWidth;
+        int height = targetHeight;
         String newName = file.getName();
         int extensionPos = newName.lastIndexOf('.');
         if (extensionPos > 0) {
@@ -22,6 +22,9 @@ public class ResolutionConverter {
         } else {
             System.err.println("ResolutionConverter: Could not find file extension!");
         }
+
+        System.out.println("Virtual Screen Width: " + targetWidth);
+        System.out.println("Virtual Screen Height: " + targetHeight);
 
         // Open newFile for writing and file for reading
         File newFile = new File(newName);
@@ -114,11 +117,11 @@ public class ResolutionConverter {
 
     private static Point convertPointTo4K(Point point) {
         Point newPoint = new Point();
-        newPoint.x = Math.round((point.x-0)*(width4k-0)/(SVGPrinter.screenWidth-0))+0;
-        newPoint.y = Math.round((point.y - 0)*(height4k - 0)/(SVGPrinter.screenHeight-0))+0;
+        newPoint.x = Math.round((point.x-0)*(targetWidth -0)/(SVGPrinter.screenWidth-0))+0;
+        newPoint.y = Math.round((point.y - 0)*(targetHeight - 0)/(SVGPrinter.screenHeight-0))+0;
 
-        System.out.println("OldPoint = " + point.toString());
-        System.out.println("NewPoint = " + newPoint.toString());
+        //System.out.println("OldPoint = " + point.toString());
+        //System.out.println("NewPoint = " + newPoint.toString());
 
         return newPoint;
     }
