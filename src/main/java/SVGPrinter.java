@@ -17,17 +17,18 @@ public class SVGPrinter {
     private String filename;
     private BufferedWriter bufferedWriter;
 
-    private int lineWidth;
-    private int circleRadius;
+    private float lineWidth;
+    private float circleRadius;
 
     private Point lastPoint;
     private Set<Point> points;
 
-    private static int screenWidth;
-    private static int screenHeight;
+    public static int screenWidth;
+    public static int screenHeight;
+    public static int numberOfDevices;
 
     public SVGPrinter() {
-        lineWidth = 2;
+        lineWidth = 0.4f;
         circleRadius = 10;
         points = new HashSet<>();
         lastPoint = null;
@@ -38,7 +39,7 @@ public class SVGPrinter {
     public void startDrawLine(Point A, Point B) {
         try {
             //System.out.println("Start draw line");
-            bufferedWriter.append("<path d=\"M" + A.x + " " + A.y + " L" + B.x + " " + B.y);
+            bufferedWriter.append("  <path d=\"M" + A.x + " " + A.y + " L" + B.x + " " + B.y);
 
             //System.out.println("Line Started Drawing At: X=" + A.x + " Y=" + A.y);
             lastPoint = B;
@@ -61,7 +62,7 @@ public class SVGPrinter {
         try {
             //System.out.println("FinishDrawLine");
 
-            bufferedWriter.append("\" style=\"stroke:black;stroke-width:2;fill:none;\"></path>\n");
+            bufferedWriter.append("\" style=\"stroke:black;stroke-width:" + lineWidth + ";fill:none;\"></path>\n");
             bufferedWriter.flush();
 
             //System.out.println("Line Finished Drawing At: X=" + lastPoint.x + " Y=" + lastPoint.y);
@@ -70,13 +71,14 @@ public class SVGPrinter {
         }
     }
 
+    @Deprecated
     public void drawCircle(Point P, float radiusMultiplier) {
         if (!points.contains(P)) {
             //System.out.println("Draw circle");
             points.add(P);
             float radius = radiusMultiplier > 1 ? circleRadius * radiusMultiplier : circleRadius;
             try {
-                bufferedWriter.append("<circle cx=" + P.x + " cy=" + P.y + " r=" + radius +
+                bufferedWriter.append("  <circle cx=" + P.x + " cy=" + P.y + " r=" + radius +
                         " style=\"stroke:black; stroke-width:" + lineWidth + ";fill:none;\"></circle>\n");
                 bufferedWriter.flush();
 
@@ -91,13 +93,15 @@ public class SVGPrinter {
     public void endDrawing() {
         try
         {
-            bufferedWriter.append("    </svg>\n  </body>\n");
-            bufferedWriter.append("</html>");
+            bufferedWriter.append("</svg>\n");
             bufferedWriter.flush();
             bufferedWriter.close();
             points.clear();
 
-            System.out.println("Finished Writing File: " + filename + "\n");
+            System.out.println("Finished writing file: " + filename + "\n");
+
+            ResolutionConverter.convertTo4K(file, screenWidth, screenHeight, numberOfDevices, lineWidth);
+
         } catch (IOException ex)
         {
             System.err.println("SVGPrinter: An issue occured while saving the file!");
@@ -107,7 +111,7 @@ public class SVGPrinter {
     public void beginDrawing() {
         filename = generateFilename();
 
-        file = new File(filename + ".html");
+        file = new File(filename + ".svg");
         try {
             bufferedWriter = new BufferedWriter(new FileWriter(file));
         }catch (IOException ex) {
@@ -116,9 +120,10 @@ public class SVGPrinter {
 
         try
         {
-            bufferedWriter.write("<!DOCTYPE html>\n");
-            bufferedWriter.append("<html>\n  <head>\n    <title>SVGPrint</title>\n  </head>\n");
-            bufferedWriter.append("  <body>\n    <svg width=\"" + screenWidth + "\" height=\"" + screenHeight + "\">\n");
+            bufferedWriter.write("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n");
+            bufferedWriter.append("<!DOCTYPE svg PUBLIC \"-//W3C//DTD SVG 1.0//EN\" \n" +
+                    "         \"http://www.w3.org/TR/2001/REC-SVG-20010904/DTD/svg10.dtd\">\n");
+            bufferedWriter.append("<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"" + screenWidth+ "\" height=\"" + screenHeight + "\">\n");
             bufferedWriter.flush();
 
             System.out.println("File Created: " + filename + "\n");
@@ -135,19 +140,33 @@ public class SVGPrinter {
     }
 
     private void initScreenSize() {
-        int minx=0, miny=0, maxx=0, maxy=0;
-        GraphicsEnvironment environment = GraphicsEnvironment.getLocalGraphicsEnvironment();
-        for(GraphicsDevice device : environment.getScreenDevices()){
-            Rectangle bounds = device.getDefaultConfiguration().getBounds();
-            minx = Math.min(minx, bounds.x);
-            miny = Math.min(miny, bounds.y);
-            maxx = Math.max(maxx,  bounds.x+bounds.width);
-            maxy = Math.max(maxy, bounds.y+bounds.height);
-        }
-        Rectangle screen = new Rectangle(minx, miny, maxx-minx, maxy-miny);
+//        int minx=0, miny=0, maxx=0, maxy=0;
+//        GraphicsEnvironment environment = GraphicsEnvironment.getLocalGraphicsEnvironment();
+//        numberOfDevices = GraphicsEnvironment.getLocalGraphicsEnvironment().getScreenDevices().length;
+//        for(GraphicsDevice device : environment.getScreenDevices()){
+//            Rectangle bounds = device.getDefaultConfiguration().getBounds();
+//            minx = Math.min(minx, bounds.x);
+//            miny = Math.min(miny, bounds.y);
+//            maxx = Math.max(maxx,  bounds.x+bounds.width);
+//            maxy = Math.max(maxy, bounds.y+bounds.height);
+//        }
+//        Rectangle screen = new Rectangle(minx, miny, maxx-minx, maxy-miny);
+//
+//        screenWidth = screen.width;
+//        screenHeight = screen.height;
 
-        screenWidth = screen.width;
-        screenHeight = screen.height;
+        Rectangle virtualBounds = new Rectangle();
+        GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
+        GraphicsDevice[] gs = ge.getScreenDevices();
+        for (int j = 0; j < gs.length; j++) {
+            GraphicsDevice gd = gs[j];
+            GraphicsConfiguration[] gc = gd.getConfigurations();
+            for (int i=0; i < gc.length; i++) {
+                virtualBounds = virtualBounds.union(gc[i].getBounds());
+            }
+        }
+        screenWidth = virtualBounds.width;
+        screenHeight = virtualBounds.height;
     }
 
     private void printScreenSize() {
