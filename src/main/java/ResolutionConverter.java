@@ -2,15 +2,19 @@ import java.awt.*;
 import java.io.*;
 
 
+/**
+ * Applies a projection operation on all points of the generated SVG to
+ *    convert it from its resolution to a given target resolution
+ */
 public class ResolutionConverter {
-    private static int targetWidth = SVGPrinter.screenWidth * 4; //3840;
-    private static int targetHeight = SVGPrinter.screenHeight * 4; //2160;
+    private static int targetWidth = SVGPrinter.screenWidth * 4;
+    private static int targetHeight = SVGPrinter.screenHeight * 4;
     private static String extension = "_enlarged.svg";
 
     private static BufferedWriter bufferedWriter;
     private static BufferedReader bufferedReader;
 
-    public static void convertTo4K(File file, int totalScreenWidth, int totalScreenHeight, int numberOfDevices, float lineWidth) {
+    public static void convertToTargetResolution(File file, int totalScreenWidth, int totalScreenHeight, int numberOfDevices, float lineWidth) {
         // Create new file at 4k resolution
         System.out.println("Converting to virtual screen resolution\n");
 
@@ -101,7 +105,7 @@ public class ResolutionConverter {
                             tempCache += String.valueOf(nextChar);
                         }
                     }
-                    Point convertedPoint = convertPointTo4K(point);
+                    Point convertedPoint = convertPoint(point);
                     bufferedWriter.append(convertedPoint.x + " " + convertedPoint.y);
                     bufferedWriter.flush();
                 }
@@ -118,13 +122,10 @@ public class ResolutionConverter {
         System.out.println("File converted. Created file: " + newName + "\n");
     }
 
-    private static Point convertPointTo4K(Point point) {
+    private static Point convertPoint(Point point) {
         Point newPoint = new Point();
-        newPoint.x = Math.round((point.x-0)*(targetWidth -0)/(SVGPrinter.screenWidth-0))+0;
-        newPoint.y = Math.round((point.y - 0)*(targetHeight - 0)/(SVGPrinter.screenHeight-0))+0;
-
-        //System.out.println("OldPoint = " + point.toString());
-        //System.out.println("NewPoint = " + newPoint.toString());
+        newPoint.x = Math.round((point.x - 0)*(targetWidth - 0)/(SVGPrinter.screenWidth - 0)) + 0;
+        newPoint.y = Math.round((point.y - 0)*(targetHeight - 0)/(SVGPrinter.screenHeight - 0)) + 0;
 
         return newPoint;
     }

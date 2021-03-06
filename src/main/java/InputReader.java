@@ -3,8 +3,9 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 
 /**
- * Controls the program execution according to keyboard input.
+ * Reads keyboard input to dictate program execution.
  * R - Begin/Stop Recording
+ * H - Print Help Text
  * X - Exit Application
  */
 public class InputReader {

@@ -2,11 +2,14 @@ import java.awt.*;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
- * Gets the mouse coordinates every according to TimeManager.Record time.
- * Draws an svg path according to the mouse movement every TimeManager tick.
- * If the mouse has not moved for .5s then it begins a DrawCircle phase, increasing the radius of the circle until the mouse is moved.
+ * Gets the mouse coordinates according to TimeManager.RecordTime.
+ * Draws an svg path according to the mouse position every TimeManager tick.
+ * Optionally can be set up such that if the mouse did not move for TimeManager.StopTime then it begins a DrawCircle phase, 
+ *    increasing the radius of the circle until the mouse is moved.
  */
 public class MouseTracker implements Runnable {
+    public boolean DrawCircles = false;
+
     private Thread worker;
     private final AtomicBoolean isRunning;
 
@@ -69,17 +72,19 @@ public class MouseTracker implements Runnable {
 
                 if (hasMoved) {
                     TimeManager.reset();
-                    if (stopCircleRadiusMultiplier > 0) {
-                        //onStay(stopCircleRadiusMultiplier);
-                        stopCircleRadiusMultiplier = 0;
+                    if (DrawCircles)
+                    {
+                        if (stopCircleRadiusMultiplier > 0) {
+                            onStay(stopCircleRadiusMultiplier);
+                            stopCircleRadiusMultiplier = 0;
+                        }
                     }
                     onMoved();
                 } else {
-                    if (TimeManager.hasStopTimePassed()) {
+                    if (TimeManager.hasStopTimePassed() && DrawCircles) {
                         stopCircleRadiusMultiplier = stopCircleRadiusMultiplier > CIRCLE_MAX_RADIUS ? CIRCLE_MAX_RADIUS : stopCircleRadiusMultiplier + CIRCLE_INCREASE_PER_TICK;
                     }
                 }
-                //System.out.println("MouseInfo CurrentPoint=" + currentPoint.toString());
             }
         }
     }
@@ -93,7 +98,6 @@ public class MouseTracker implements Runnable {
         }
     }
 
-    @Deprecated
     public void onStay(float circleRadiusMultiplier) {
         if (isDrawingLine) {
             svgPrinter.finishDrawLine();

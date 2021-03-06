@@ -2,7 +2,7 @@ import java.io.IOException;
 
 /**
  * Entry point to the program.
- * Additionally provides the Text UI and access to commands through the KeyboardInputReader
+ * Contains the program loop.
  */
 public class Main {
     public static void main(String[] args) {

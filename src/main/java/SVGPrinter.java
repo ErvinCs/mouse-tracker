@@ -38,10 +38,8 @@ public class SVGPrinter {
 
     public void startDrawLine(Point A, Point B) {
         try {
-            //System.out.println("Start draw line");
             bufferedWriter.append("  <path d=\"M" + A.x + " " + A.y + " L" + B.x + " " + B.y);
 
-            //System.out.println("Line Started Drawing At: X=" + A.x + " Y=" + A.y);
             lastPoint = B;
         }catch (IOException ex) {
             System.err.println("SVGPrinter: Failed on StartDrawLine!");
@@ -50,7 +48,6 @@ public class SVGPrinter {
 
     public void continueDrawLine(Point C) {
         try {
-            //System.out.println("Continue draw line");
             bufferedWriter.append(" L" + C.x + " " + C.y);
             lastPoint = C;
         }catch (IOException ex) {
@@ -60,29 +57,21 @@ public class SVGPrinter {
 
     public void finishDrawLine() {
         try {
-            //System.out.println("FinishDrawLine");
-
             bufferedWriter.append("\" style=\"stroke:black;stroke-width:" + lineWidth + ";fill:none;\"></path>\n");
             bufferedWriter.flush();
-
-            //System.out.println("Line Finished Drawing At: X=" + lastPoint.x + " Y=" + lastPoint.y);
         }catch (IOException ex) {
             System.err.println("SVGPrinter: Failed on ContinueDrawLine!");
         }
     }
 
-    @Deprecated
     public void drawCircle(Point P, float radiusMultiplier) {
         if (!points.contains(P)) {
-            //System.out.println("Draw circle");
             points.add(P);
             float radius = radiusMultiplier > 1 ? circleRadius * radiusMultiplier : circleRadius;
             try {
                 bufferedWriter.append("  <circle cx=" + P.x + " cy=" + P.y + " r=" + radius +
                         " style=\"stroke:black; stroke-width:" + lineWidth + ";fill:none;\"></circle>\n");
                 bufferedWriter.flush();
-
-                //System.out.println("Circle Drawn At: X=" + P.x + " Y=" + P.y + " Radius=" + radius);
             } catch (IOException ex) {
                 System.err.println("SVGPrinter: Could not draw circle!");
             }
@@ -100,7 +89,7 @@ public class SVGPrinter {
 
             System.out.println("Finished writing file: " + filename + "\n");
 
-            ResolutionConverter.convertTo4K(file, screenWidth, screenHeight, numberOfDevices, lineWidth);
+            ResolutionConverter.convertToTargetResolution(file, screenWidth, screenHeight, numberOfDevices, lineWidth);
 
         } catch (IOException ex)
         {
@@ -140,21 +129,6 @@ public class SVGPrinter {
     }
 
     private void initScreenSize() {
-//        int minx=0, miny=0, maxx=0, maxy=0;
-//        GraphicsEnvironment environment = GraphicsEnvironment.getLocalGraphicsEnvironment();
-//        numberOfDevices = GraphicsEnvironment.getLocalGraphicsEnvironment().getScreenDevices().length;
-//        for(GraphicsDevice device : environment.getScreenDevices()){
-//            Rectangle bounds = device.getDefaultConfiguration().getBounds();
-//            minx = Math.min(minx, bounds.x);
-//            miny = Math.min(miny, bounds.y);
-//            maxx = Math.max(maxx,  bounds.x+bounds.width);
-//            maxy = Math.max(maxy, bounds.y+bounds.height);
-//        }
-//        Rectangle screen = new Rectangle(minx, miny, maxx-minx, maxy-miny);
-//
-//        screenWidth = screen.width;
-//        screenHeight = screen.height;
-
         Rectangle virtualBounds = new Rectangle();
         GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
         GraphicsDevice[] gs = ge.getScreenDevices();
